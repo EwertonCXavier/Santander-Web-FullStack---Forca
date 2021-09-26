@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body onload="quantidadeLetras()">
+    <main class="container">
+        <div class="container-game">
+            <div class="container-span">
+                <div class="container-center-span">
+                    <span id="vidas">Número de vidas: 5</span>
+        
+                    <span id="letras">Quantidade de letras da palavra: </span>
+                    
+                    <span id="used-letters">Letras utilizadas: </span>
+                    
+                    <span id="word-underlined">Palavra: </span>
+                </div>
+            </div>
+            
+            <form onclick="form(event)" class="form-letter">
+                <input id="input-letter" type="text" placeholder="Digite a letra que deseja verificar: " maxlength="1" minLength="1">            
+                <button id="submit-button" type="submit">Submeter letra</button>
+                
+            </form>
+            <button id="restart-button" type="submit" style="display:none;" onclick="restartGame()">Reiniciar Jogo</button>
+        </div>
+    </main>
+
+    
+    <script>
+        const listaPalavras = ["abacaxi", "abacate", "maracuja", "mamao", "laranja", "tangerina", "graviola"];
+        let letrasUsadas = [];
+        let vidas = 5;
+        let contador = 0; // Verifica o numero de letras que foram "acertadas"
+        let palavras = '';
+
+        function form(event){
+            event.preventDefault();
+        }
+
+        function getRandomWord(min, max){
+            return Math.floor(Math.random()*(max - min + 1) + min);
+        }
+        let currentWord = getRandomWord(0, listaPalavras.length - 1);
+        function quantidadeLetras() {
+            document.getElementById("letras").innerHTML = `Quantidade de letras da palavra: ${listaPalavras[currentWord].length}`;
+            for(let index in listaPalavras[currentWord]){
+                palavras += '_';
+            }
+            document.getElementById("word-underlined").innerHTML = `Palavra: ${palavras.split('').join(' ')}`
+        }
+
+        function replaceAt(index, replacement){
+            let chars = palavras.split('');
+            chars[index] = replacement;
+            return chars.join('');
+        }
+
+        function restartGame(){
+            contador = 0;
+            vidas = 5;
+            letrasUsadas = [];
+            palavras = '';
+            currentWord = getRandomWord(0, listaPalavras.length - 1);
+            document.getElementById("vidas").innerHTML = `Vidas: ${vidas}`;
+            document.getElementById("used-letters").innerHTML = `Letras utilizadas: ${letrasUsadas}`;
+            document.getElementById("letras").innerHTML = `Quantidade de letras da palavra: ${listaPalavras[currentWord].length}`;
+            document.getElementById("restart-button").style.display = "none";
+            document.getElementById("submit-button").style.display = "block";
+            document.getElementById("input-letter").style.display = "flex";
+            
+            console.log(currentWord);
+            for(let index in listaPalavras[currentWord]){
+                palavras += '_';
+            }
+            document.getElementById("word-underlined").innerHTML = `Palavra: ${palavras.split('').join(' ')}`
+
+        }
+
+        function checkWord(){
+            const regex = /^[a-zA-Z]{1}$/
+            let currentLetter = document.getElementById("input-letter").value;
+            currentLetter = currentLetter.toLowerCase(); // passa para letras minúsculas
+            console.log(vidas);
+            if(currentLetter.match(regex) === null || currentLetter === null){
+                alert("Insira uma letra!");
+                document.getElementById("input-letter").focus();
+                } else {
+                    let state = true;
+                    if(letrasUsadas.length > 0){
+                        for(let index in letrasUsadas){
+                            if(currentLetter === letrasUsadas[index]){
+                                document.getElementById("input-letter").focus();
+                                state = false;
+                                break;
+                            }
+                        }
+                    }
+                    // letrasUsadas.push(currentLetter);
+                    // console.log(letrasUsadas);
+                    if(state){
+                        console.time("Exercício da Forca");
+                        cont = 0;
+                        for(let index in listaPalavras[currentWord]){
+                            if(currentLetter === listaPalavras[currentWord][index]){
+                                palavras = replaceAt(index, currentLetter);
+                                contador = contador + 1;
+
+                                cont = cont + 1;
+                                console.log(`A letra ${currentLetter} está na posicao ${index}. Parabéns!!!`);
+                            }
+                        }
+                        letrasUsadas.push(currentLetter);
+                        console.log(letrasUsadas);
+                        document.getElementById('used-letters').innerHTML = `Letras utilizadas: ${letrasUsadas}`
+                        if(cont === 0 ){
+                            vidas = vidas - 1;
+                            document.getElementById('vidas').innerHTML = `Número de vidas: ${vidas}`;
+                            console.log(`Infelizmente a letra ${currentLetter} não está presente na palavra atual. Sua quantidade de vidas é: ${vidas}`);
+
+                        } else {
+                            document.getElementById('word-underlined').innerHTML = `Palavra: ${palavras.split('').join(' ')}`
+                        }
+                        console.timeEnd("Exercício da Forca");
+
+                        if(contador === listaPalavras[currentWord].length){
+                            alert(`Parabéns!!! Você acertou a palavra ${listaPalavras[currentWord]}`);
+                            let iniciar = prompt("Suas vidas acabaram. Digite S para jogar novamente ou qualquer outra letra para parar.");
+                            if(iniciar === "S"){
+                                restartGame();
+                            } else {
+                                console.log("Muito obrigado!");
+                                document.getElementById("restart-button").style.display = "block";
+                                document.getElementById("submit-button").style.display = "none";
+                                document.getElementById("input-letter").style.display = "none";
+                            }
+                        }
+
+
+                        if(vidas === 0){
+                            let iniciar = prompt("Suas vidas acabaram. Digite S para jogar novamente ou qualquer outra letra para parar.");
+                            if(iniciar === "S"){
+                                restartGame();
+                            } else {
+                                console.log("Muito obrigado!");
+                                document.getElementById("restart-button").style.display = "block";
+                                document.getElementById("submit-button").style.display = "none";
+                                document.getElementById("input-letter").style.display = "none";
+                            }
+                        }
+
+
+                        document.getElementById("input-letter").value = "";
+                        document.getElementById("input-letter").focus();
+                    } else {
+                        alert("Insira a letra novamente!");
+                        document.getElementById("input-letter").value = "";
+                        document.getElementById("input-letter").focus();
+                    }
+                }    
+        
+        }
+
+        document.getElementById("submit-button").addEventListener("click", checkWord )
+    </script>
+</body>
+</html>
