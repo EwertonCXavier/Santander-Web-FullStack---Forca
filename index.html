@@ -9,6 +9,10 @@
 </head>
 <body onload="quantidadeLetras()">
     <main class="container">
+        <div class="logotipo">
+            <img src="./assets/pokemon.png" alt="Logo Pokemon">
+            <span class="span-pokemon">Personagens do Pokémon</span>
+        </div>
         <div class="container-game">
             <div class="container-span">
                 <div class="container-center-span">
@@ -33,11 +37,21 @@
 
     
     <script>
-        const listaPalavras = ["abacaxi", "abacate", "maracuja", "mamao", "laranja", "tangerina", "graviola"];
+        const BASE_URL = 'https://pokeapi.co/api/v2/pokemon/'
+        
+        // Definição da função assíncrona
+        async function fetchPokeApi(id) {
+            const response = await fetch(`${BASE_URL}${id}`);
+            const data = await response.json();
+            return data;
+        }
+        
+        //const listaPalavras = ["abacaxi", "abacate", "maracuja", "mamao", "laranja", "tangerina", "graviola"];
         let letrasUsadas = [];
         let vidas = 5;
         let contador = 0; // Verifica o numero de letras que foram "acertadas"
         let palavras = '';
+        var dataPokemon;
 
         function form(event){
             event.preventDefault();
@@ -46,13 +60,22 @@
         function getRandomWord(min, max){
             return Math.floor(Math.random()*(max - min + 1) + min);
         }
-        let currentWord = getRandomWord(0, listaPalavras.length - 1);
+        function form(event){
+            event.preventDefault();
+        }
+
+        
         function quantidadeLetras() {
-            document.getElementById("letras").innerHTML = `Quantidade de letras da palavra: ${listaPalavras[currentWord].length}`;
-            for(let index in listaPalavras[currentWord]){
-                palavras += '_';
-            }
-            document.getElementById("word-underlined").innerHTML = `Palavra: ${palavras.split('').join(' ')}`
+            fetchPokeApi(getRandomWord(0, 40)).then(info => {
+                dataPokemon = info.name;
+                console.log(dataPokemon.length);
+                document.getElementById("letras").innerHTML = `Quantidade de letras da palavra: ${dataPokemon.length}`;
+                for(let index in dataPokemon){
+                    palavras += '_';
+                }
+                document.getElementById("word-underlined").innerHTML = `Palavra: ${palavras.split('').join(' ')}`
+            })
+            
         }
 
         function replaceAt(index, replacement){
@@ -66,19 +89,17 @@
             vidas = 5;
             letrasUsadas = [];
             palavras = '';
-            currentWord = getRandomWord(0, listaPalavras.length - 1);
-            document.getElementById("vidas").innerHTML = `Vidas: ${vidas}`;
+            quantidadeLetras();
+            
+            document.getElementById("vidas").innerHTML = `Vidas Restantes: ${vidas}`;
             document.getElementById("used-letters").innerHTML = `Letras utilizadas: ${letrasUsadas}`;
-            document.getElementById("letras").innerHTML = `Quantidade de letras da palavra: ${listaPalavras[currentWord].length}`;
+            document.getElementById("letras").innerHTML = `Quantidade de letras da palavra: ${dataPokemon.length}`;
+            
+            
             document.getElementById("restart-button").style.display = "none";
             document.getElementById("submit-button").style.display = "block";
             document.getElementById("input-letter").style.display = "flex";
-            
-            console.log(currentWord);
-            for(let index in listaPalavras[currentWord]){
-                palavras += '_';
-            }
-            document.getElementById("word-underlined").innerHTML = `Palavra: ${palavras.split('').join(' ')}`
+    
 
         }
 
@@ -101,13 +122,12 @@
                             }
                         }
                     }
-                    // letrasUsadas.push(currentLetter);
-                    // console.log(letrasUsadas);
+
                     if(state){
                         console.time("Exercício da Forca");
                         cont = 0;
-                        for(let index in listaPalavras[currentWord]){
-                            if(currentLetter === listaPalavras[currentWord][index]){
+                        for(let index in dataPokemon){
+                            if(currentLetter === dataPokemon[index]){
                                 palavras = replaceAt(index, currentLetter);
                                 contador = contador + 1;
 
@@ -120,7 +140,7 @@
                         document.getElementById('used-letters').innerHTML = `Letras utilizadas: ${letrasUsadas}`
                         if(cont === 0 ){
                             vidas = vidas - 1;
-                            document.getElementById('vidas').innerHTML = `Número de vidas: ${vidas}`;
+                            document.getElementById('vidas').innerHTML = `Vidas Restantes: ${vidas}`;
                             console.log(`Infelizmente a letra ${currentLetter} não está presente na palavra atual. Sua quantidade de vidas é: ${vidas}`);
 
                         } else {
@@ -128,8 +148,8 @@
                         }
                         console.timeEnd("Exercício da Forca");
 
-                        if(contador === listaPalavras[currentWord].length){
-                            alert(`Parabéns!!! Você acertou a palavra ${listaPalavras[currentWord]}`);
+                        if(contador === dataPokemon.length){
+                            alert(`Parabéns!!! Você acertou a palavra ${dataPokemon}`);
                             let iniciar = prompt("Digite S para jogar novamente ou qualquer outra letra para parar.");
                             if(iniciar === "S"){
                                 restartGame();
@@ -143,6 +163,7 @@
 
 
                         if(vidas === 0){
+                            alert(`A resposta era ${dataPokemon}`)
                             let iniciar = prompt("Suas vidas acabaram. Digite S para jogar novamente ou qualquer outra letra para parar.");
                             if(iniciar === "S"){
                                 restartGame();

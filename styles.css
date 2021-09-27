@@ -10,19 +10,23 @@
     width: 100%;
     height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
  
 }
 
 .container-game {
-    width: 50%;
+    width: 30rem;
     height: 20rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     padding: 3rem;
+    background-color: #eee;
+    border-radius: 1rem;
+    box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.15);
 }
 
 .container-span {
@@ -31,6 +35,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background-color: #eee;
+    
 }
 
 
@@ -40,12 +46,18 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: left;
+    background-color: #eee;
+}
+
+.container-center-span span {
+    background-color: #eee;
 }
 
 .form-letter {
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #eee;
 }
 
 input {
@@ -78,6 +90,41 @@ button {
     text-align: center;
 }
 
+
+
+
+/* ------- logotipo ------- */
+
+.logotipo {
+    height: 3rem;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: #eee;
+    box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.25);
+}
+
+
+img {
+    width: 4rem;
+    height: 3rem;
+    margin-right: 3rem;
+    background: #eee;
+}
+
+
+
+.span-pokemon {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-left: 3rem;
+    background-color: #eee;
+}
 
 
 
